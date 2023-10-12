@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Visualize the Collatz Conjecture
+    </title>
+    <script src="https://d3js.org/d3.v5.min.js">
+    </script>
+</head>
+<body>
+    <h1>
+        Visualizer
+    </h1>
+    <label for="input">
+        Enter a positive integer: 
+    </label>
+    <input type="number" id="input" min="1">
+    <button onclick="calcCollatz()">
+        Calculate
+    </button>
+    <div id="visualization">
+    </div>
+    <script>
+        function calcCollatz() {
+            const input = parseInt(document.getElementById("input").value);
+            if (isNaN(input) || input <= 0) {
+                alert("Please enter a positive integer.");
+                return;
+            }
+
+            const data = []; //data array for collatz[i]
+            let current = input;
+            while (current !== 1) {
+                data.push(current);
+                if (current % 2 === 0) {
+                    current = current / 2;
+                } else {
+                    current = 3 * current + 1;
+                }
+            }
+            data.push(1);
+
+            const svg = d3.select("#visualization")
+                .append("svg")
+                .attr("width", 800)
+                .attr("height", 400);
+
+            const nodes = svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("r", 10)
+                .attr("cx", (d, i) => i * 30 + 20)
+                .attr("cy", 100);
+
+            const links = svg.selectAll("line")
+                .data(data.slice(0, data.length - 1))
+                .enter()
+                .append("line")
+                .attr("x1", (d, i) => i * 30 + 20)
+                .attr("y1", 100)
+                .attr("x2", (d, i) => (i + 1) * 30 + 20)
+                .attr("y2", 100);
+        }
+    </script>
+</body>
+</html>
